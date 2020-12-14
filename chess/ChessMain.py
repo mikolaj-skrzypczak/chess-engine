@@ -15,6 +15,11 @@ SQUARE_SIZE = HEIGHT // DIMENSION
 
 MAX_FPS = 15
 
+
+def test ():
+    return 0
+
+    
 IMAGES = {}
 
 '''
