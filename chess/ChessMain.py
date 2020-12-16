@@ -6,6 +6,7 @@ Displaying current GameStatus object.
 
 import pygame as p
 from chess import ChessEngine
+import sys
 
 WIDTH = HEIGHT = 512
 DIMENSION = 8
@@ -51,6 +52,7 @@ def main():
             if e.type == p.QUIT:
                 running = False
                 p.quit()
+                sys.exit()
             #mouse handler
             elif e.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos() #(x, y) location of the mouse
