@@ -17,7 +17,7 @@ class GameState():
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "wR", "--", "--", "--", "bR", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
@@ -102,9 +102,25 @@ class GameState():
         '''
         Get all the rook moves for the rook located at row, col and add the moves to the list.
         '''
-        pass
-    
-    
+        directions = ((-1, 0), (0, -1), (1, 0), (0, 1)) #up, left, down, right
+        enemy_color = "b" if self.white_to_move else "w"
+        for direction in directions:
+            for i in range(1,8):
+                end_row = row + direction[0] * i
+                end_col = col + direction[1] * i
+                if 0 <= end_row <= 7 and 0 <= end_col <= 7: #check for possible moves only in boundries of the board
+                    end_piece = self.board[end_row][end_col]
+                    if end_piece == "--": #empty space is valid
+                        moves.append(Move((row, col), (end_row, end_col), self.board))
+                    elif end_piece[0] == enemy_color: #capture enemy piece
+                        moves.append(Move((row, col), (end_row, end_col), self.board))
+                        break
+                    else: #friendly piece
+                        break
+                else: #off board
+                    break
+                        
+                        
     def getKnightMoves(self, row, col, moves):
         '''
         Get all the knight moves for the knight located at row col and add the moves to the list.
