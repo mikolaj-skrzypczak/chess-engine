@@ -48,8 +48,7 @@ def main():
     player_clicks = [] #this will keep track of player clicks (two tuples)
 
     while running:
-        for e in p.event.get():
-            
+        for e in p.event.get():  
             if e.type == p.QUIT:
                 running = False
                 p.quit()
@@ -66,14 +65,15 @@ def main():
                     square_selected = (row, col)
                     player_clicks.append(square_selected) #append for both 1st and 2nd click
                 if len(player_clicks) == 2: #after 2nd click
-                    move = ChessEngine.Move(player_clicks[0], player_clicks[1], game_state.board)
-                    print(move.getChessNotation())
-                    
+                    move = ChessEngine.Move(player_clicks[0], player_clicks[1], game_state.board)  
                     if move in valid_moves:
+                        print(move.getChessNotation())   
                         game_state.makeMove(move)
                         move_made = True
-                    square_selected = () #reset user clicks
-                    player_clicks = [] 
+                        square_selected = () #reset user clicks
+                        player_clicks = [] 
+                    else:
+                        player_clicks = [square_selected]
             #key handler
             elif e.type == p.KEYDOWN:
                 if e.key == p.K_z: #undo when 'z' is pressed

@@ -16,8 +16,8 @@ class GameState():
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "wB", "--", "--", "--", "--"],
-            ["--", "--", "bB", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
@@ -159,22 +159,27 @@ class GameState():
                     break
                     
                 
-
-
     def getQueenMoves(self, row, col, moves):
         '''
         Get all the queen moves for the queen located at row col and add the moves to the list.
         '''
-        pass
+        self.getBishopMoves(row, col, moves)
+        self.getRookMoves(row, col, moves)
     
     
     def getKingMoves(self, row, col, moves):
         '''
         Get all the king moves for the king located at row col and add the moves to the list.
         '''
-        pass
-    
-    
+        king_moves = ((-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1))
+        ally_color = "w" if self.white_to_move else "b"
+        for move in king_moves:
+            end_row = row + move[0]
+            end_col = col + move[1]
+            if 0 <= end_row <= 7 and 0 <= end_col <= 7:
+                end_piece = self.board[end_row][end_col]
+                if end_piece[0] != ally_color:
+                    moves.append(Move((row, col), (end_row, end_col), self.board))
     
         
 class Move():
