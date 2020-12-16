@@ -49,11 +49,12 @@ def main():
 
     while running:
         for e in p.event.get():
+            
             if e.type == p.QUIT:
                 running = False
                 p.quit()
                 sys.exit()
-            #mouse handler
+            #mouse handler            
             elif e.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos() #(x, y) location of the mouse
                 col = location[0] // SQUARE_SIZE
@@ -67,6 +68,7 @@ def main():
                 if len(player_clicks) == 2: #after 2nd click
                     move = ChessEngine.Move(player_clicks[0], player_clicks[1], game_state.board)
                     print(move.getChessNotation())
+                    
                     if move in valid_moves:
                         game_state.makeMove(move)
                         move_made = True

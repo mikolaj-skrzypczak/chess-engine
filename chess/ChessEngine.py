@@ -16,8 +16,8 @@ class GameState():
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "wN", "--", "--", "--", "--"],
-            ["--", "--", "bN", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "wB", "--", "--", "--", "--"],
+            ["--", "--", "bB", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
@@ -105,7 +105,7 @@ class GameState():
         directions = ((-1, 0), (0, -1), (1, 0), (0, 1)) #up, left, down, right
         enemy_color = "b" if self.white_to_move else "w"
         for direction in directions:
-            for i in range(1,8):
+            for i in range(1, 8):
                 end_row = row + direction[0] * i
                 end_col = col + direction[1] * i
                 if 0 <= end_row <= 7 and 0 <= end_col <= 7: #check for possible moves only in boundries of the board
@@ -140,7 +140,25 @@ class GameState():
         '''
         Get all the bishop moves for the bishop located at row col and add the moves to the list.
         '''
-        pass
+        directions = ((-1, -1), (-1, 1), (1, 1), (1, -1)) #digaonals: up/left up/right down/right down/left
+        enemy_color = "b" if self.white_to_move else "w"    
+        for direction in directions:
+            for i in range(1, 8):
+                end_row = row + direction[0] * i
+                end_col = col + direction[1] * i
+                if 0 <= end_row <= 7 and 0 <= end_col <=7: #check if the move is on board
+                    end_piece = self.board[end_row][end_col]
+                    if end_piece == "--": #empty space is valid
+                        moves.append(Move((row, col), (end_row, end_col), self.board))
+                    elif end_piece[0] == enemy_color: #capture enemy piece
+                        moves.append(Move((row, col), (end_row, end_col), self.board))
+                        break
+                    else: #friendly piece
+                        break
+                else: #off board
+                    break
+                    
+                
 
 
     def getQueenMoves(self, row, col, moves):
