@@ -16,8 +16,8 @@ class GameState():
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "wR", "--", "--", "--", "bR", "--", "--"],
+            ["--", "--", "--", "wN", "--", "--", "--", "--"],
+            ["--", "--", "bN", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
@@ -125,8 +125,16 @@ class GameState():
         '''
         Get all the knight moves for the knight located at row col and add the moves to the list.
         '''
-        pass
-    
+        knight_moves = ((-2, -1), (-2, 1), (-1, 2), (1, 2), (2, -1), (2, 1), (-1, -2), (1, -2)) #up/left up/right right/up right/down down/left down/right left/up left/down
+        ally_color = "w" if self.white_to_move else "b"
+        for move in knight_moves:
+            end_row = row + move[0]
+            end_col = col + move[1]
+            if 0 <= end_row <= 7 and 0 <= end_col <= 7:
+                end_piece = self.board[end_row][end_col]
+                if end_piece[0] != ally_color: #so it's either enemy piece or empty equare 
+                    moves.append(Move((row, col), (end_row, end_col), self.board))
+                    
     
     def getBishopMoves(self, row, col, moves):
         '''
