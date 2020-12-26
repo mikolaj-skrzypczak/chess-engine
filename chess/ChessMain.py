@@ -5,7 +5,7 @@ Displaying current GameStatus object.
 '''
 
 import pygame as p
-from chess import ChessEngine
+import ChessEngine
 import sys
 
 WIDTH = HEIGHT = 512
