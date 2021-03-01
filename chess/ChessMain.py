@@ -6,6 +6,7 @@ Displaying current GameStatus object.
 
 import pygame as p
 import ChessEngine
+import ChessAI
 import sys
 
 WIDTH = HEIGHT = 512
@@ -54,8 +55,12 @@ def main():
     moves_list = []
     
     turn = 1
+    
+    player_one = False #if a human is playing white, then this will be True, else False
+    player_two = False #if a hyman is playing white, then thiss will be True, else False
 
     while running:
+        human_turn = (game_state.white_to_move and player_one) or (not game_state.white_to_move and player_two)
         for e in p.event.get():  
             if e.type == p.QUIT:
                 running = False
@@ -63,7 +68,7 @@ def main():
                 sys.exit()
             #mouse handler            
             elif e.type == p.MOUSEBUTTONDOWN:
-                if not game_over:
+                if not game_over and human_turn:
                     location = p.mouse.get_pos() #(x, y) location of the mouse
                     col = location[0] // SQUARE_SIZE
                     row = location[1] // SQUARE_SIZE
@@ -78,21 +83,10 @@ def main():
                         for i in range(len(valid_moves)):
                             if move == valid_moves[i]:
                                 game_state.makeMove(valid_moves[i])
-                                if game_state.checkForPinsAndChecks()[0]:
-                                    if not game_state.white_to_move:
-                                        white_did_check = "+"
-                                    else:
-                                        black_did_check = "+"
                                 move_made = True
                                 animate = True
                                 square_selected = () #reset user clicks
-                                player_clicks = [] 
-                                if game_state.white_to_move:
-                                    moves_list.append(f"\n{turn}. {game_state.move_log[-2].getChessNotation()}{white_did_check} {game_state.move_log[-1].getChessNotation()}{black_did_check}")
-                                    print(f"\n{turn}. {game_state.move_log[-2].getChessNotation()}{white_did_check} {game_state.move_log[-1].getChessNotation()}{black_did_check}", end= "")
-                                    turn+=1
-                                    white_did_check = ""
-                                    black_did_check = ""
+                                player_clicks = []   
                         if not move_made:
                             player_clicks = [square_selected]
 
@@ -119,8 +113,29 @@ def main():
                     turn = 1
                     last_move_printed = False
                     moves_list = []
+                    
+        #AI move finder
+        if not game_over and not human_turn:
+            AI_move = ChessAI.findRandomMove(valid_moves)
+            game_state.makeMove(AI_move)
+            move_made = True
+            animate = True
         
         if move_made:
+            if game_state.checkForPinsAndChecks()[0]:
+                if not game_state.white_to_move:
+                    white_did_check = "+"
+                else:
+                    black_did_check = "+"
+            if game_state.white_to_move:
+                moves_list.append(f"\n{turn}. {game_state.move_log[-2].getChessNotation()}{white_did_check} {game_state.move_log[-1].getChessNotation()}{black_did_check}")
+                print(f"\n{turn}. {game_state.move_log[-2].getChessNotation()}{white_did_check} {game_state.move_log[-1].getChessNotation()}{black_did_check}", end= "")
+                turn+=1
+                white_did_check = ""
+                black_did_check = ""
+            
+            
+            
             if animate:
                 animateMove(game_state.move_log[-1], screen, game_state.board, clock)
             valid_moves = game_state.getValidMoves()
