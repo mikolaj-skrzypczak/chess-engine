@@ -56,7 +56,7 @@ def main():
     
     turn = 1
     
-    player_one = False #if a human is playing white, then this will be True, else False
+    player_one = True #if a human is playing white, then this will be True, else False
     player_two = False #if a hyman is playing white, then thiss will be True, else False
 
     while running:
@@ -116,8 +116,11 @@ def main():
                     
         #AI move finder
         if not game_over and not human_turn:
-            AI_move = ChessAI.findRandomMove(valid_moves)
-            game_state.makeMove(AI_move)
+            #AI_move = ChessAI.findRandomMove(valid_moves)
+            AI_move = ChessAI.findBestMove(game_state, valid_moves)
+            if AI_move is None:
+                AI_move = ChessAI.findRandomMove(valid_moves)
+            game_state.makeMove(AI_move, False)
             move_made = True
             animate = True
         
@@ -171,7 +174,7 @@ def main():
             game_over = True
             drawText(screen, "Stalemate")
             if not last_move_printed:
-                if not game_state.white_to_move():
+                if not game_state.white_to_move:
                     moves_list.append(f"\n{turn}. {game_state.move_log[-1].getChessNotation()}")
                     moves_list.append("result: 1/2-1/2")
                     print(f"\n{turn}. {game_state.move_log[-1].getChessNotation()}")
