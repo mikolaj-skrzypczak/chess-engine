@@ -6,7 +6,7 @@ import random
 piece_score = {"K": 0, "Q": 9, "R": 5, "B": 3, "N": 3, "p": 1}
 CHECKMATE = 1000
 STALEMATE = 0
-DEPTH = 3
+DEPTH = 2
 
 #deprecated
 def findRandomMove(valid_moves):
@@ -58,6 +58,7 @@ def findBestMoveMinMax(game_state, valid_moves):
     '''
     global next_move
     next_move = None
+    random.shuffle(valid_moves)
     findMoveMinMax(game_state, valid_moves, DEPTH, game_state.white_to_move)
     return next_move
 
@@ -90,6 +91,33 @@ def findMoveMinMax(game_state, valid_moves, depth, white_to_move):
                     next_move = move
             game_state.undoMove()
         return min_score
+
+
+def findBestMoveNegaMax(game_state, valid_moves):
+    global next_move
+    next_move = None
+    random.shuffle(valid_moves)
+    findMoveNegaMax(game_state, valid_moves, DEPTH, 1 if game_state.white_to_move else -1)
+    return next_move 
+
+
+def findMoveNegaMax(game_state, valid_moves, depth, turn_multiplier):
+    global next_move
+    if depth == 0:
+        return turn_multiplier * scoreBoard(game_state)
+    
+    max_score = -CHECKMATE
+    for move in valid_moves:
+        game_state.makeMove(move)
+        next_moves = game_state.getValidMoves()
+        score = -findMoveNegaMax(game_state, next_moves, depth - 1, -turn_multiplier)
+        if score > max_score:
+            max_score = score
+            if depth == DEPTH:
+                next_move = move
+        game_state.undoMove()
+    return max_score
+
 
 
 def scoreBoard(game_state):
