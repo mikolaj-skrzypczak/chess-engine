@@ -56,7 +56,7 @@ def main():
     
     turn = 1
     
-    player_one = True #if a human is playing white, then this will be True, else False
+    player_one = False #if a human is playing white, then this will be True, else False
     player_two = False #if a hyman is playing white, then thiss will be True, else False
 
     while running:
@@ -110,13 +110,13 @@ def main():
                     move_made = False
                     animate = False
                     game_over = False
-                    turn = 1
+                    turn = 1    
                     last_move_printed = False
                     moves_list = []
                     
         #AI move finder
         if not game_over and not human_turn:
-            AI_move = ChessAI.findBestMoveNegaMax(game_state, valid_moves)
+            AI_move = ChessAI.findBestMoveNegaMaxAlphaBeta(game_state, valid_moves)
             if AI_move is None:
                 AI_move = ChessAI.findRandomMove(valid_moves)
             game_state.makeMove(AI_move, True)
