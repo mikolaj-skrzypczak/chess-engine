@@ -8,18 +8,20 @@ CHECKMATE = 1000
 STALEMATE = 0
 DEPTH = 3
 
-#deprecated
+
+# deprecated
 def findRandomMove(valid_moves):
-    '''
+    """
     Picks and returns a random valid move.
-    '''
+    """
     return random.choice(valid_moves)
 
-#deprecated
+
+# deprecated
 def findBestMove(game_state, valid_moves):
-    '''
+    """
     Greedy algorithm to find the best move based on material alone.
-    ''' 
+    """
     turn_multiplier = 1 if game_state.white_to_move else -1
     opponent_min_max_score = CHECKMATE
     best_player_move = None
@@ -52,18 +54,19 @@ def findBestMove(game_state, valid_moves):
     return best_player_move
 
 
-#deprecated
-def findBestMoveMinMax(game_state, valid_moves): 
-    '''
+# deprecated
+def findBestMoveMinMax(game_state, valid_moves):
+    """
     Helper method to make the first recursive call
-    '''
+    """
     global next_move
     next_move = None
     random.shuffle(valid_moves)
     findMoveMinMax(game_state, valid_moves, DEPTH, game_state.white_to_move)
     return next_move
 
-#deprecated
+
+# deprecated
 def findMoveMinMax(game_state, valid_moves, depth, white_to_move):
     global next_move
     if depth == 0:
@@ -94,21 +97,21 @@ def findMoveMinMax(game_state, valid_moves, depth, white_to_move):
         return min_score
 
 
-#deprecated
+# deprecated
 def findBestMoveNegaMax(game_state, valid_moves):
     global next_move
     next_move = None
     random.shuffle(valid_moves)
     findMoveNegaMax(game_state, valid_moves, DEPTH, 1 if game_state.white_to_move else -1)
-    return next_move 
+    return next_move
 
 
-#deprecated
+# deprecated
 def findMoveNegaMax(game_state, valid_moves, depth, turn_multiplier):
     global next_move
     if depth == 0:
         return turn_multiplier * scoreBoard(game_state)
-    
+
     max_score = -CHECKMATE
     for move in valid_moves:
         game_state.makeMove(move)
@@ -126,16 +129,17 @@ def findBestMoveNegaMaxAlphaBeta(game_state, valid_moves):
     global next_move
     next_move = None
     random.shuffle(valid_moves)
-    findMoveNegaMaxAlphaBeta(game_state, valid_moves, DEPTH, -CHECKMATE, CHECKMATE, 1 if game_state.white_to_move else -1)
-    return next_move 
+    findMoveNegaMaxAlphaBeta(game_state, valid_moves, DEPTH, -CHECKMATE, CHECKMATE,
+                             1 if game_state.white_to_move else -1)
+    return next_move
 
 
 def findMoveNegaMaxAlphaBeta(game_state, valid_moves, depth, alpha, beta, turn_multiplier):
     global next_move
     if depth == 0:
         return turn_multiplier * scoreBoard(game_state)
-    
-    #move ordering - implement later //TODO
+
+    # move ordering - implement later //TODO
     max_score = -CHECKMATE
     for move in valid_moves:
         game_state.makeMove(move)
@@ -154,37 +158,37 @@ def findMoveNegaMaxAlphaBeta(game_state, valid_moves, depth, alpha, beta, turn_m
 
 
 def scoreBoard(game_state):
-    '''
+    """
     Score the board. A positive score is good for white, a negative score is good for black.
-    '''
+    """
     if game_state.checkmate:
         if game_state.white_to_move:
-            return -CHECKMATE #black wins
+            return -CHECKMATE  # black wins
         else:
-            return CHECKMATE #white wins
+            return CHECKMATE  # white wins
     elif game_state.stalemate:
         return STALEMATE
     score = 0
     for row in game_state.board:
         for square in row:
             if square[0] == 'w':
-                score += piece_score[square[1]] 
+                score += piece_score[square[1]]
             elif square[0] == 'b':
                 score -= piece_score[square[1]]
     return score
-    
 
-#deprecated
+
+# deprecated
 def scoreMaterial(board):
-    '''
+    """
     Score the board based on material.
 
-    '''
+    """
     score = 0
     for row in board:
         for square in row:
             if square[0] == 'w':
-                score += piece_score[square[1]] 
+                score += piece_score[square[1]]
             elif square[0] == 'b':
                 score -= piece_score[square[1]]
     return score
