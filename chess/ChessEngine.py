@@ -364,10 +364,12 @@ class GameState():
             move_amount = -1
             start_row = 6
             enemy_color = "b"
+            king_row, king_col = self.white_king_location
         else:
             move_amount = 1
             start_row = 1
             enemy_color = "w"
+            king_row, king_col = self.black_king_location
         
         if self.board[row+move_amount][col] == "--": #1 square pawn advance
             if not piece_pinned or pin_direction == (move_amount, 0):
@@ -379,13 +381,53 @@ class GameState():
                 if self.board[row + move_amount][col - 1][0] == enemy_color:
                     moves.append(Move((row, col), (row + move_amount, col - 1), self.board))
                 if (row + move_amount, col - 1) == self.enpassant_possible:
-                    moves.append(Move((row, col), (row + move_amount, col - 1), self.board, is_enpassant_move = True))
+                    attacking_piece = blocking_piece = False
+                    if king_row == row:
+                        if king_col < col: #king is left of the pawn
+                            #inside: between king and the pawn;
+                            #outside: between pawn and border;
+                            inside_range = range(king_col+1, col-1)
+                            outside_range = range(col+1, 8)
+                        else: #king right of the pawn
+                            inside_range = range(king_col-1, col, -1)
+                            outside_range = range(col-2, -1, -1)
+                        for i in inside_range:
+                            if self.board[row][i] != "--":  #some piece beside en-passant pawn blocks
+                                blocking_piece = True
+                        for i in outside_range:
+                            square = self.board[row][i]
+                            if square[0] == enemy_color and (square[1] == "R" or square[1] == "Q"):
+                                attacking_piece = True
+                            elif square != "--":
+                                blocking_piece = True
+                    if not attacking_piece or blocking_piece:
+                        moves.append(Move((row, col), (row + move_amount, col - 1), self.board, is_enpassant_move = True))
         if col + 1 <= 7: #capture to the right
             if not piece_pinned or pin_direction == (move_amount, +1):
                 if self.board[row + move_amount][col +1][0] == enemy_color:
                     moves.append(Move((row, col), (row + move_amount, col + 1), self.board))
                 if (row + move_amount, col + 1) == self.enpassant_possible:
-                    moves.append(Move((row, col), (row + move_amount, col + 1), self.board, is_enpassant_move = True))
+                    attacking_piece = blocking_piece = False
+                    if king_row == row:
+                        if king_col < col: #king is left of the pawn
+                            #inside: between king and the pawn;
+                            #outside: between pawn and border;
+                            inside_range = range(king_col+1, col)
+                            outside_range = range(col+2, 8)
+                        else: #king right of the pawn
+                            inside_range = range(king_col-1, col+1, -1)
+                            outside_range = range(col-1, -1, -1)
+                        for i in inside_range:
+                            if self.board[row][i] != "--":  #some piece beside en-passant pawn blocks
+                                blocking_piece = True
+                        for i in outside_range:
+                            square = self.board[row][i]
+                            if square[0] == enemy_color and (square[1] == "R" or square[1] == "Q"):
+                                attacking_piece = True
+                            elif square != "--":
+                                blocking_piece = True
+                    if not attacking_piece or blocking_piece:
+                        moves.append(Move((row, col), (row + move_amount, col + 1), self.board, is_enpassant_move = True))
                     
         
     def getRookMoves(self, row, col, moves):
