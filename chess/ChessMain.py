@@ -4,19 +4,16 @@ Handling user input.
 Displaying current GameStatus object.
 """
 import pygame as p
-import ChessEngine
-import ChessAI
+import ChessEngine, ChessAI
 import sys
+from multiprocessing import Process, Queue
 
 BOARD_WIDTH = BOARD_HEIGHT = 512
 MOVE_LOG_PANEL_WIDTH = 250
 MOVE_LOG_PANEL_HEIGHT = BOARD_HEIGHT
 DIMENSION = 8
-
 SQUARE_SIZE = BOARD_HEIGHT // DIMENSION
-
 MAX_FPS = 15
-
 IMAGES = {}
 
 
@@ -44,12 +41,13 @@ def main():
     move_made = False  # flag variable for when a move is made
     animate = False  # flag variable for when we should animate a move
     loadImages()  # do this only once before while loop
-
     running = True
     square_selected = ()  # no square is selected initially, this will keep track of the last click of the user (tuple(row,col))
     player_clicks = []  # this will keep track of player clicks (two tuples)
     game_over = False
-
+    ai_thinking = False
+    move_undone = False
+    move_finder_process = None
     white_did_check = ""
     black_did_check = ""
     last_move_printed = False
@@ -58,7 +56,7 @@ def main():
 
     turn = 1
 
-    player_one = False  # if a human is playing white, then this will be True, else False
+    player_one = True  # if a human is playing white, then this will be True, else False
     player_two = False  # if a hyman is playing white, then this will be True, else False
 
     while running:
@@ -69,7 +67,7 @@ def main():
                 sys.exit()
             # mouse handler
             elif e.type == p.MOUSEBUTTONDOWN:
-                if not game_over and human_turn:
+                if not game_over:
                     location = p.mouse.get_pos()  # (x, y) location of the mouse
                     col = location[0] // SQUARE_SIZE
                     row = location[1] // SQUARE_SIZE
@@ -79,7 +77,7 @@ def main():
                     else:
                         square_selected = (row, col)
                         player_clicks.append(square_selected)  # append for both 1st and 2nd click
-                    if len(player_clicks) == 2:  # after 2nd click
+                    if len(player_clicks) == 2 and human_turn:  # after 2nd click
                         move = ChessEngine.Move(player_clicks[0], player_clicks[1], game_state.board)
                         for i in range(len(valid_moves)):
                             if move == valid_moves[i]:
@@ -102,7 +100,10 @@ def main():
                     animate = False
                     game_over = False
                     last_move_printed = False
-
+                    if ai_thinking:
+                        move_finder_process.terminate()
+                        ai_thinking = False
+                    move_undone = True
                 if e.key == p.K_r:  # reset the game when 'r' is pressed
                     game_state = ChessEngine.GameState()
                     valid_moves = game_state.getValidMoves()
@@ -114,15 +115,27 @@ def main():
                     turn = 1
                     last_move_printed = False
                     moves_list = []
+                    if ai_thinking:
+                        move_finder_process.terminate()
+                        ai_thinking = False
+                    move_undone = True
 
         # AI move finder
-        if not game_over and not human_turn:
-            ai_move = ChessAI.findBestMoveNegaMaxAlphaBeta(game_state, valid_moves)
-            if ai_move is None:
-                ai_move = ChessAI.findRandomMove(valid_moves)
-            game_state.makeMove(ai_move)
-            move_made = True
-            animate = True
+        if not game_over and not human_turn and not move_undone:
+            if not ai_thinking:
+                ai_thinking = True
+                return_queue = Queue()  # used to pass data between threads
+                move_finder_process = Process(target=ChessAI.findBestMove, args=(game_state, valid_moves, return_queue))
+                move_finder_process.start()
+
+            if not move_finder_process.is_alive():
+                ai_move = return_queue.get()
+                if ai_move is None:
+                    ai_move = ChessAI.findRandomMove(valid_moves)
+                game_state.makeMove(ai_move)
+                move_made = True
+                animate = True
+                ai_thinking = False
 
         if move_made:
             if game_state.checkForPinsAndChecks()[0]:
@@ -148,6 +161,7 @@ def main():
             valid_moves = game_state.getValidMoves()
             move_made = False
             animate = False
+            move_undone = False
 
         drawGameState(screen, game_state, valid_moves, square_selected)
 
@@ -155,7 +169,7 @@ def main():
             drawMoveLog(screen, game_state, move_log_font)
 
         if game_state.checkmate:
-            #TODO # instead of ++ on checkmate
+            # TODO # instead of ++ on checkmate
             game_over = True
             if game_state.white_to_move:
                 drawEndGameText(screen, "Black wins by checkmate")
@@ -227,7 +241,8 @@ def highlightSquares(screen, game_state, valid_moves, square_selected):
         screen.blit(s, (last_move.end_col * SQUARE_SIZE, last_move.end_row * SQUARE_SIZE))
     if square_selected != ():
         row, col = square_selected
-        if game_state.board[row][col][0] == ('w' if game_state.white_to_move else 'b'):  # square_selected is a piece that can be moved
+        if game_state.board[row][col][0] == (
+                'w' if game_state.white_to_move else 'b'):  # square_selected is a piece that can be moved
             # highlight selected square
             s = p.Surface((SQUARE_SIZE, SQUARE_SIZE))
             s.set_alpha(100)  # transparency value 0 -> transparent, 255 -> opaque
