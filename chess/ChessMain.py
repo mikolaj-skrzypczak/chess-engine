@@ -48,14 +48,7 @@ def main():
     ai_thinking = False
     move_undone = False
     move_finder_process = None
-    white_did_check = ""
-    black_did_check = ""
-    last_move_printed = False
-    moves_list = []
     move_log_font = p.font.SysFont("Arial", 14, False, False)
-
-    turn = 1
-
     player_one = True  # if a human is playing white, then this will be True, else False
     player_two = False  # if a hyman is playing white, then this will be True, else False
 
@@ -92,14 +85,10 @@ def main():
             # key handler
             elif e.type == p.KEYDOWN:
                 if e.key == p.K_z:  # undo when 'z' is pressed
-                    if game_state.white_to_move:
-                        if turn > 1:
-                            turn -= 1
                     game_state.undoMove()
                     move_made = True
                     animate = False
                     game_over = False
-                    last_move_printed = False
                     if ai_thinking:
                         move_finder_process.terminate()
                         ai_thinking = False
@@ -112,9 +101,6 @@ def main():
                     move_made = False
                     animate = False
                     game_over = False
-                    turn = 1
-                    last_move_printed = False
-                    moves_list = []
                     if ai_thinking:
                         move_finder_process.terminate()
                         ai_thinking = False
@@ -138,24 +124,6 @@ def main():
                 ai_thinking = False
 
         if move_made:
-            if game_state.checkForPinsAndChecks()[0]:
-                if not game_state.white_to_move:
-                    white_did_check = "+"
-                else:
-                    black_did_check = "+"
-            if game_state.white_to_move:
-                try:
-                    moves_list.append(
-                        f"\n{turn}. {game_state.move_log[-2].getChessNotation()}{white_did_check} {game_state.move_log[-1].getChessNotation()}{black_did_check}")
-                    print(
-                        f"\n{turn}. {game_state.move_log[-2].getChessNotation()}{white_did_check} {game_state.move_log[-1].getChessNotation()}{black_did_check}",
-                        end="")
-                    turn += 1
-                    white_did_check = ""
-                    black_did_check = ""
-                except IndexError:
-                    pass
-
             if animate:
                 animateMove(game_state.move_log[-1], screen, game_state.board, clock)
             valid_moves = game_state.getValidMoves()
@@ -169,39 +137,15 @@ def main():
             drawMoveLog(screen, game_state, move_log_font)
 
         if game_state.checkmate:
-            # TODO # instead of ++ on checkmate
             game_over = True
             if game_state.white_to_move:
                 drawEndGameText(screen, "Black wins by checkmate")
-                if not last_move_printed:
-                    moves_list[-1] += "+"
-                    moves_list.append("result: 0-1")
-                    print("+")
-                    print("result: 0-1")
-                    last_move_printed = True
-                    saveGame(moves_list)
-
             else:
                 drawEndGameText(screen, "White wins by checkmate")
-                if not last_move_printed:
-                    moves_list.append(f"\n{turn}. {game_state.move_log[-1].getChessNotation()}++")
-                    moves_list.append("result: 1-0")
-                    print(f"\n{turn}. {game_state.move_log[-1].getChessNotation()}++")
-                    print("result: 1-0")
-                    last_move_printed = True
-                    saveGame(moves_list)
 
         elif game_state.stalemate:
             game_over = True
             drawEndGameText(screen, "Stalemate")
-            if not last_move_printed:
-                if not game_state.white_to_move:
-                    moves_list.append(f"\n{turn}. {game_state.move_log[-1].getChessNotation()}")
-                    moves_list.append("result: 1/2-1/2")
-                    print(f"\n{turn}. {game_state.move_log[-1].getChessNotation()}")
-                    print("result: 1/2-1/2")
-                    last_move_printed = True
-                    saveGame(moves_list)
 
         clock.tick(MAX_FPS)
         p.display.flip()
@@ -295,23 +239,6 @@ def drawMoveLog(screen, game_state, font):
         text_location = move_log_rect.move(padding, text_y)
         screen.blit(text_object, text_location)
         text_y += text_object.get_height() + line_spacing
-
-
-def saveGame(moves_list):
-    result = moves_list.pop()
-    turns_dict = {}
-    for i in range(len(moves_list) - 1, -1, -1):
-        try:
-            int(moves_list[i][1])
-            if moves_list[i][1] not in turns_dict:
-                turns_dict[moves_list[i][1]] = moves_list[i][1:] + "\n"
-        except IndexError:
-            pass
-    file = open("last_game_logs.txt", "w")
-    for turn in sorted(turns_dict.keys()):
-        file.write(turns_dict[turn])
-    file.write(result)
-    file.close()
 
 
 def drawEndGameText(screen, text):
