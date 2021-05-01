@@ -58,8 +58,8 @@ def main():
 
     turn = 1
 
-    player_one = True  # if a human is playing white, then this will be True, else False
-    player_two = True  # if a hyman is playing white, then this will be True, else False
+    player_one = False  # if a human is playing white, then this will be True, else False
+    player_two = False  # if a hyman is playing white, then this will be True, else False
 
     while running:
         human_turn = (game_state.white_to_move and player_one) or (not game_state.white_to_move and player_two)
@@ -155,6 +155,7 @@ def main():
             drawMoveLog(screen, game_state, move_log_font)
 
         if game_state.checkmate:
+            #TODO # instead of ++ on checkmate
             game_over = True
             if game_state.white_to_move:
                 drawEndGameText(screen, "Black wins by checkmate")
