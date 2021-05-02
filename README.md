@@ -1,5 +1,4 @@
 # Python Chess Engine
-## Table of contents
 
 ## Table of contents
 * [General info](#general-info)
@@ -27,7 +26,7 @@ encourage you to visit his YouTube channel and check the whole series by yoursel
 - [ ] Stalemate on 3 repeated moves or 50 moves without capture/pawn advancement.
 - [ ] Menu to select player vs player/computer.
 - [ ] Allow dragging pieces.
-- [ ] Resolve ambiguating moves (notation)
+- [ ] Resolve ambiguating moves (notation).
 
 ## Instructions
 1. Clone this repository.
@@ -40,7 +39,7 @@ encourage you to visit his YouTube channel and check the whole series by yoursel
 * Press `r` to reset the game.
 
 ## Further development ideas
-1. Ordering the moves (ex. looking at checks and/or captures) should make the engine much quicker (because of the alpha-beta pruning)
+1. Ordering the moves (ex. looking at checks and/or captures) should make the engine much quicker (because of the alpha-beta pruning).
 2. Keeping track of all the possible moves in a given position, so that after a move is made the engine doesn't have to recalculate all the moves.
-3. Evaluating kings placement on the board (separate in middle game and in the late game)
+3. Evaluating kings placement on the board (separate in middle game and in the late game).
 4. Book of openings.
