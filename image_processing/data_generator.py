@@ -39,8 +39,8 @@ def gen_board(pieces):
 def create_board_with_pieces_save_increment_counter(pieces, screen, counter):
     board = gen_board(pieces)
     drawGameState(screen, board)
-    p.image.save(screen, f'images/board{to_string_helper(counter)}.png')
-    save_to_csv(f"matrices/board{to_string_helper(counter)}.csv", board)
+    p.image.save(screen, f'images/board{counter:04d}.png')
+    save_to_csv(f"matrices/board{counter:04d}.csv", board)
     counter += 1
     return counter
 
@@ -49,21 +49,10 @@ def create_board_with_random_pieces_save_increment_counter(n_pieces, screen, cou
     pieces = np.random.choice(ALL_PIECES, n_pieces)
     board = gen_board(pieces)
     drawGameState(screen, board)
-    p.image.save(screen, f'images/board{to_string_helper(counter)}.png')
-    save_to_csv(f"matrices/board{to_string_helper(counter)}.csv", board)
+    p.image.save(screen, f'images/board{counter:04d}.png')
+    save_to_csv(f"matrices/board{counter:04d}.csv", board)
     counter += 1
     return counter
-
-
-def to_string_helper(counter):
-    str_counter = str(counter)
-    if len(str_counter) == 1:
-        str_counter = "000" + str_counter
-    elif len(str_counter) == 2:
-        str_counter = "00" + str_counter
-    elif len(str_counter) == 3:
-        str_counter = "0" + str_counter
-    return str_counter
 
 
 def save_to_csv(filename, lst):
