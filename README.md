@@ -2,7 +2,6 @@
 
 ## Table of contents
 * [General info](#general-info)
-* [Image processing project](#image-processing)
 * [Technologies](#technologies)
 * [TODO](#todo)
 * [Instructions](#instructions)
@@ -17,20 +16,11 @@ encourage you to visit his YouTube channel and check the whole series by yoursel
 
 [First episode of "Chess engine in Python"](https://www.youtube.com/watch?v=EnYui0e73Rs&ab_channel=EddieSharick)
 
-Edit (November 2021):
-In order to complete my Human-Computer Communication classes I had to choose any image processing related topic and 
-prepare a project of my choice. I have decided to go with chess again. Our (project done in pairs, my co-worker's GitHub profile: [Piotr45](https://github.com/Piotr45))
-goal is to create a neural network able to recognize pieces from a 2D chess board :smile:
-
-Files related to this project can be found in [image_processing](image_processing) folder.
 ## Technologies
 * Python 3.7.8
 * pygame 2.0.1
-* numpy 1.21.4
-
 
 ## TODO
-feel free to contribute :grinning:
 - [ ] Cleaning up the code - right now it is really messy.
 - [ ] Using numpy arrays instead of 2d lists.
 - [ ] Stalemate on 3 repeated moves or 50 moves without capture/pawn advancement.
