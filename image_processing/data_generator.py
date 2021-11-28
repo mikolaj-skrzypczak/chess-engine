@@ -38,7 +38,7 @@ def gen_board(pieces):
 
 def create_board_with_pieces_save_increment_counter(pieces, screen, counter):
     board = gen_board(pieces)
-    drawGameState(screen, board)
+    draw_game_state(screen, board)
     p.image.save(screen, f'images/board{counter:04d}.png')
     save_to_csv(f"matrices/board{counter:04d}.csv", board)
     counter += 1
@@ -48,7 +48,7 @@ def create_board_with_pieces_save_increment_counter(pieces, screen, counter):
 def create_board_with_random_pieces_save_increment_counter(n_pieces, screen, counter):
     pieces = np.random.choice(ALL_PIECES, n_pieces)
     board = gen_board(pieces)
-    drawGameState(screen, board)
+    draw_game_state(screen, board)
     p.image.save(screen, f'images/board{counter:04d}.png')
     save_to_csv(f"matrices/board{counter:04d}.csv", board)
     counter += 1
@@ -61,7 +61,7 @@ def save_to_csv(filename, lst):
         writer.writerows(lst)
 
 
-def loadImages():
+def load_image():
     """
     Initialize a global directory of images.
     This will be called exactly once in the main.
@@ -71,15 +71,15 @@ def loadImages():
         IMAGES[piece] = p.transform.scale(p.image.load("../chess/images/" + piece + ".png"), (SQUARE_SIZE, SQUARE_SIZE))
 
 
-def drawGameState(screen, board):
+def draw_game_state(screen, board):
     """
     Responsible for all the graphics within current game state.
     """
-    drawBoard(screen)  # draw squares on the board
-    drawPieces(screen, board)  # draw pieces on top of those squares
+    draw_board(screen)  # draw squares on the board
+    draw_pieces(screen, board)  # draw pieces on top of those squares
 
 
-def drawBoard(screen):
+def draw_board(screen):
     """
     Draw the squares on the board.
     The top left square is always light.
@@ -92,7 +92,7 @@ def drawBoard(screen):
             p.draw.rect(screen, color, p.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
 
-def drawPieces(screen, board):
+def draw_pieces(screen, board):
     """
     Draw the pieces on the board using the current game_state.board
     """
@@ -107,7 +107,7 @@ def main():
     p.init()
     screen = p.display.set_mode((BOARD_WIDTH, BOARD_HEIGHT))
     screen.fill(p.Color("white"))
-    loadImages()  # do this only once before while loop
+    load_image()  # do this only once before while loop
 
     z = 0
 
