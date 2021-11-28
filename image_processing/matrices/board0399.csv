@@ -1,8 +1,8 @@
---,bB,--,--,bN,wR,--,bK
---,bp,--,--,wB,bR,wR,--
-wN,bp,wK,--,bp,--,wR,bp
---,bp,--,--,bp,wN,bQ,wN
---,--,--,--,--,--,wB,wQ
---,--,--,--,wB,--,--,bR
---,--,--,wR,bp,wQ,--,bB
-bN,wK,--,--,bp,--,wB,wN
+wQ,--,--,--,bp,--,--,wB
+--,--,--,--,wN,--,--,bp
+bp,--,wR,--,--,--,bR,bN
+--,wB,--,--,--,wN,--,--
+--,--,--,--,bp,bK,--,wK
+--,bp,bR,wR,bN,--,wB,wB
+bp,--,bB,--,wR,bp,wN,bB
+wN,--,wK,bp,bQ,--,wQ,wR
