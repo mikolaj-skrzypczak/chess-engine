@@ -1,13 +1,13 @@
 # Python Chess Engine
 
-## Table of contents
+## Table of contents.
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [TODO](#todo)
 * [Instructions](#instructions)
 * [Further development ideas](#further-development-ideas)
 
-## General info
+## General info.
 I have been playing chess since primary school and one day I had an idea to implement chess in Python. Then, I came across a tutorial by Eddie Sharick, who made a whole 16 episodes series covering the topic.
 This repository is a result of following his videos,  sometimes coming up with some improvements on my own. Hereby, I highly
 encourage you to visit his YouTube channel and check the whole series by yourself.
